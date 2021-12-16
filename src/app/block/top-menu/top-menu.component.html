@@ -1,0 +1,177 @@
+<div class="container-fluid">
+  <nav class="navbar navbar-expand-custom navbar-mainbg">
+    <a class="navbar-brand navbar-logo" style="padding-left: 50px">
+      <img src="favicon.ico" alt="">
+      Lux Stay</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars text-white"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto" style="padding-left: 700px">
+        <div class="hori-selector"><div class="left"></div><div class="right"></div></div>
+        <li class="nav-item active">
+          <a class="nav-link" href="javascript:void(0);" (click)="returnHome()">
+            <i class="fas fa-tachometer-alt"></i>Trang chủ</a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="javascript:void(0);" (click)="moveToSearchPage()">
+
+            <i class="far fa-address-book"></i>
+            Tìm kiếm tất cả</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0);" (click)="open(SignUpFormModal)"  *ngIf="checkLogged()==false">
+            <i class="far fa-clone"></i>
+            Trở thành chủ nhà</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0);" (click)="open(SignInFormModal)" *ngIf="checkLogged()==false">
+            <i class="far fa-calendar-alt"></i>
+            Đăng nhập</a>
+        </li>
+<!--        <li class="nav-item">-->
+<!--          <a class="nav-link" href="javascript:void(0);"><i class="far fa-chart-bar"></i>Charts</a>-->
+<!--        </li>-->
+<!--        <li class="nav-item">-->
+<!--          <a class="nav-link" href="javascript:void(0);"><i class="far fa-copy"></i>Documents</a>-->
+<!--        </li>-->
+        <li class="nav-item" *ngIf="checkLogged()==true" style="padding-left: 300px">
+          <a class="nav-link" href="javascript:void(0);" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" >
+            Xin chào: <span>{{this.tokenService.getName()}}</span>
+          </a>
+        </li>
+        <li class="nav-item" *ngIf="checkLogged()==true">
+          <a class="nav-link link-info" role="button" routerLink="user/{{this.tokenService.getUserId()}}">Tới trang cá nhân</a>
+        </li>
+        <li class="nav-item" *ngIf="checkLogged()==true">
+          <a class="nav-link link-info" role="button" (click)="logout()" >Thoát</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+
+<!--signIn-->
+<ng-template #SignInFormModal let-signIn>
+  <div class="modal-body">
+      <div class="container-fluid">
+        <div class="signin-content">
+          <div class="signin-image">
+            <figure><img src="assets/register/images/signin-image.jpg" alt="sing up image"></figure>
+            <a class="signup-image-link" (click)="signIn.dismiss();open(SignUpFormModal)">Tạo tài khoản mới</a>
+            <a class="signup-image-link mt-3">Quên mật khẩu</a>
+          </div>
+          <div class="signin-form p-3" >
+            <h2 class="form-title text-center ">ĐĂNG NHẬP</h2>
+            <form id="login-form" class="form-login" (ngSubmit)="ngLogin()">
+<!--              username-->
+              <div class="input-group flex-nowrap mt-3">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <input type="text" class="form-control" aria-label="UserName" placeholder="Tên đăng nhập"
+                       aria-describedby="addon-wrapping" [(ngModel)]="form.username" #username="ngModel" [ngModelOptions]="{standalone: true}"/>
+              </div>
+<!--              password-->
+              <div class="input-group flex-nowrap mt-3">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" class="form-control" aria-label="Password" placeholder="Mật khẩu"
+                       aria-describedby="addon-wrapping" [(ngModel)]="form.password" #password="ngModel" [ngModelOptions]="{standalone: true}"/>
+              </div>
+              <div class="form-group form-button mt-3">
+                <input type="submit" name="signin" id="signin" class="form-submit" value="Đăng nhập" style="height: 50px;width: 100px"/>
+              </div>
+            </form>
+            <div class="alert alert-warning mt-3" hidden>Tài khoản hoặc mật khẩu của bạn không đúng</div>
+            <div class="social-login mt-5">
+              <span class="social-label">Hoặc đăng nhập với</span>
+              <ul class="socials">
+                <li><a ><i class="display-flex-center zmdi zmdi-facebook"></i></a></li>
+                <li><a ><i class="display-flex-center zmdi zmdi-twitter"></i></a></li>
+                <li><a href="#"><i class="display-flex-center zmdi zmdi-google"></i></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</ng-template>
+
+<!--register-->
+<ng-template #SignUpFormModal let-signUp>
+  <div class="modal-content">
+    <div class="modal-header">
+        <div class="col-8">
+          <div class="signup-form container-fluid">
+            <form class="register-form p-4" id="register-form" (ngSubmit)="ngSubmit()" style="width: 400px;padding-left: 10px">
+              <div class="form-group">
+                <h2 class="form-title text-center">Đăng ký mới</h2>
+                <mat-error class="alert-warning" >{{status}}</mat-error>
+                <!--                  username-->
+                <div class="input-group flex-nowrap mt-3">
+                  <span class="input-group-text"><mat-icon>person</mat-icon></span>
+                  <input type="text" class="form-control" aria-label="UserName" placeholder="Tên đăng nhập"
+                         aria-describedby="addon-wrapping"
+                         [(ngModel)]="form.username" #username="ngModel" required minlength="3" maxlength="50" [ngModelOptions]="{standalone: true}"/>
+                </div>
+                <span class="alert-info" *ngIf="username.hasError('required')">Tên đăng nhập là bắt buộc</span>
+                <mat-error *ngIf="username.hasError('minlength')">Tên đăng nhập tối thiểu 3 kí tự</mat-error>
+                <!--                  phone-->
+                <div class="input-group flex-nowrap mt-3">
+                  <span class="input-group-text"><mat-icon>phone</mat-icon></span>
+                  <input type="text" class="form-control" aria-label="UserName" placeholder="Số điện thoại"
+                         aria-describedby="addon-wrapping"
+                         [(ngModel)]="form.phone" #phone="ngModel" required minlength="10" maxlength="11"
+                         [ngModelOptions]="{standalone: true}"/>
+                </div>
+                <span class="alert-info" *ngIf="phone.hasError('required')">Vui lòng nhập số điện thoại</span>
+                <mat-error  *ngIf="phone.hasError('minlength')">Số điện thoại phải có tối thiểu 10 số! </mat-error>
+                <!--                  password-->
+                <div class="input-group flex-nowrap mt-3">
+                  <span class="input-group-text"><mat-icon>https</mat-icon></span>
+                  <input type="password" class="form-control" aria-label="Password" placeholder="Mật khẩu"
+                         aria-describedby="addon-wrapping"
+                         [(ngModel)]="form.password" #password="ngModel" required minlength="6" maxlength="18" matInput [type]="hide ? 'password' : 'text'"
+                         [ngModelOptions]="{standalone: true}"/>
+                </div>
+                <span class="alert-info" *ngIf="password.hasError('required')">Mật khẩu là bắt buộc</span>
+                <mat-error *ngIf="password.hasError('minlength')">Mật khẩu phải có tối thiểu 6 kí tự</mat-error>
+                <!--                  confirm password-->
+<!--                <div class="input-group flex-nowrap mt-3">-->
+<!--                  <span class="input-group-text"><mat-icon>lock_clock</mat-icon></span>-->
+<!--                  <input type="password" class="form-control" aria-label="Password" placeholder="Nhập lại mật khẩu"-->
+<!--                         aria-describedby="addon-wrapping"-->
+<!--                         required minlength="6" maxlength="18" matInput [type]="hide ? 'password' : 'text'"/>-->
+<!--                </div>-->
+                <!--                  <mat-error>Mật khẩu nhập lại không đúng</mat-error>-->
+              </div>
+              <div class="form-group form-button mt-4">
+<!--                <input type="checkbox" name="agree-term" id="agree-term" class="agree-term" checked />-->
+<!--                <label for="agree-term" class="label-agree-term">-->
+<!--                  <span><span></span></span>I agree all statements in  <a href="#" class="term-service">Terms of service</a></label>-->
+                <p>
+                  <ngb-alert *ngIf="notice==true" type="success">Tạo tài khoản mới thành công</ngb-alert>
+                </p>
+              </div>
+
+              <div class="form-group form-button mt-4">
+                <input type="submit" name="signup" id="signup" class="form-submit" value="Đăng ký"  style="width: 150px"/>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="col">
+          <div class="signup-image">
+            <img src="assets/register/images/signup-image.jpg" alt="sing up image">
+            <a class="signup-image-link" (click)="signUp.dismiss();open(SignInFormModal)">Đã là thành viên</a>
+          </div>
+        </div>
+      </div>
+    <div class="modal-footer">
+    </div>
+  </div>
+
+</ng-template>
+
+<ng-template #createApartmentFormModal>
+  <app-apartment-create></app-apartment-create>
+</ng-template>

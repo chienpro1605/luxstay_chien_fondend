@@ -1,0 +1,121 @@
+<div class="container-fluid">
+  <div class="row"></div>
+  <div class="row">
+    <div class="col-4">
+      <h1 class="text-xl-start text-decoration-underline text-secondary">Chọn lịch trình</h1>
+      <ngb-datepicker #dp [(ngModel)]="model"  (dateSelect)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t"
+                      [markDisabled]="isDisabled" >
+      </ngb-datepicker>
+      <ng-template #t let-date let-focused="focused" let-selected="selected" let-disabled="disabled">
+        <span class="custom-day"
+              [class.text-muted]="disabled"
+              [class.focused]="focused"
+              [class.range]="isRange(date)"
+              [class.faded]="isHovered(date) || isInside(date)"
+              (mouseenter)="hoveredDate = date"
+              (mouseleave)="hoveredDate = null">
+        {{ date.day }}
+        </span>
+      </ng-template>
+      <div class="row">
+        <table class="table table-borderless">
+          <tr>
+            <td class="font-italic text-decoration-underline" style="width: 120px">Bạn đã chọn:</td>
+            <td class="form-group">
+              <p class="font-weight-bold">Từ ngày: </p>
+              <p class="text-success text-md-start font-weight-bolder">{{ startDateJs | date:'dd/MM/yyyy' }}</p>
+            </td>
+            <td class="form-group">
+              <p class="font-weight-bold">Đến ngày: </p>
+              <p class="text-success text-md-start font-weight-bolder">{{ endDateJs | date: 'dd/MM/yyyy' }}</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="row">
+<!--        <form class="form-inline">-->
+          <div class="form-group">
+            <div class="input-group">
+              <input
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                [markDisabled]="isDisabled"
+                name="dp"
+                [(ngModel)]="model"
+                ngbDatepicker
+                #d="ngbDatepicker"
+                [placement]="'bottom'">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+              </div>
+            </div>
+          </div>
+<!--        </form>-->
+      </div>
+      <form [formGroup]="orderForm">
+        <table class="table table-light border-bottom text-center">
+          <tr>
+            <th colspan="2" class="text-center">
+              <h1 class="text-xl">Thông tin đặt chỗ</h1>
+            </th>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <div class="input-group flex-nowrap">
+                <span class="input-group-text">Họ tên khách hàng</span>
+                <input type="text" class="form-control" (change)="cal()"
+                       aria-describedby="addon-wrapping" formControlName="userFullName"/>
+                <mat-error></mat-error>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <div class="input-group flex-nowrap">
+                <span class="input-group-text">Điện thoại liên hệ</span>
+                <input type="text" class="form-control" (change)="cal()"
+                       aria-describedby="addon-wrapping" formControlName="userPhoneNums"/>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="input-group flex-nowrap">
+                <span class="input-group-text">Số ngày đã đặt:</span>
+                <input type="text" class="form-control" disabled
+                       aria-describedby="addon-wrapping" value="{{day}}"/>
+              </div>
+            </td>
+            <td>
+              <div class="input-group flex-nowrap">
+                <span class="input-group-text">Tổng tiền:</span>
+                <input type="text" class="form-control " disabled
+                       aria-describedby="addon-wrapping" value="{{totalPaid}}"/>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <button class="btn btn-primary" (click)="createRentOrder()">Gửi yêu cầu</button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+    <div class="col-4">
+      <div class="row">
+        <p>Danh sách ngày đã được đặt</p>
+        <table class="table table-light">
+          <tr *ngFor="let days of json.disabledDates">
+            <td>{{days|json}}</td>
+          </tr>
+        </table>
+      </div>
+      <p *ngIf="orderCreated === true">
+        <ngb-alert type="success">Gửi yêu cầu thành công! Vui lòng chờ xác nhận từ chủ nhà</ngb-alert>
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+#user-component {
+  /*position: fixed;*/
+  margin-left: -20px;
+}
+
+
+.example-container {
+  width: 1950px;
+  /*height: 100%;*/
+  /*margin: 12px;*/
+  /*border: 1px solid #555;*/
+}
+
+mat-drawer {
+  width: 300px;
+}
+
+mat-drawer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 1000px;
+  position: relative;
+}
+
+#menuBtn {
+  margin-left: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+button {
+  background-color: deepskyblue;
+  color: white;
+}
+#menuBtn button:hover {
+  color: deepskyblue;
+  background-color: white;
+}
+
+

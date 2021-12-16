@@ -1,0 +1,130 @@
+
+<h2 style="background-color: purple;" class="text-white p-2 rounded"><i class="fas fa-hotel"></i> &nbsp;Lịch sử thuê của tôi</h2>
+
+<p *ngIf="checkInSuccess==true">
+  <ngb-alert type="success" >Check in thành công!!</ngb-alert>
+</p>
+<!--<p *ngIf="cancelAlert==true">-->
+<!--  <ngb-alert type="warning" >Hủy yêu cầu thành công! Đã gửi thông báo đến khách hàng</ngb-alert>-->
+<!--</p>-->
+
+
+<div class="mat-elevation-z8">
+  <table mat-table [dataSource]="dataSource">
+
+    <ng-container matColumnDef="order-status">
+      <th mat-header-cell *matHeaderCellDef> Trạng thái yêu cầu </th>
+      <td mat-cell *matCellDef="let element"> {{element.orderStatus}} </td>
+    </ng-container>
+
+    <!-- Position Column -->
+    <!--    <ng-container matColumnDef="customer">-->
+    <!--      <th mat-header-cell *matHeaderCellDef> Tên khách hàng </th>-->
+    <!--      <td mat-cell *matCellDef="let element"> {{element.userFullName}} </td>-->
+    <!--    </ng-container>-->
+
+    <!--    <ng-container matColumnDef="phone-numbers">-->
+    <!--      <th mat-header-cell *matHeaderCellDef> Số điện thoại </th>-->
+    <!--      <td mat-cell *matCellDef="let element"> {{element.userPhoneNums}} </td>-->
+    <!--    </ng-container>-->
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="startDate">
+      <th mat-header-cell *matHeaderCellDef> Ngày nhận phòng </th>
+      <td mat-cell *matCellDef="let element"> {{ngbDateToDate(element.startDate)| date: 'dd/MM/yyyy'}} </td>
+    </ng-container>
+
+    <!-- Weight Column -->
+    <ng-container matColumnDef="endDate">
+      <th mat-header-cell *matHeaderCellDef> Ngày trả phòng </th>
+      <td mat-cell *matCellDef="let element"> {{ngbDateToDate(element.endDate)| date: 'dd/MM/yyyy'}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="paid">
+      <th mat-header-cell *matHeaderCellDef> Tổng thanh toán </th>
+      <td mat-cell *matCellDef="let element"> {{element.totalPaid | number:'1.0-0'}} VND</td>
+    </ng-container>
+
+    <ng-container matColumnDef="apartment">
+      <th mat-header-cell *matHeaderCellDef> Tên căn hộ thuê </th>
+      <td mat-cell *matCellDef="let element"> {{element.apartment.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="check-in">
+      <th mat-header-cell *matHeaderCellDef> Đã check-in </th>
+      <td mat-cell *matCellDef="let element"> {{element.checkIn}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="checkin">
+      <th mat-header-cell *matHeaderCellDef> #1 </th>
+      <td mat-cell *matCellDef="let element"><button class="btn btn-success" (click)="checkIn(element.id)">Check-in</button></td>
+    </ng-container>
+
+     Symbol Column
+    <ng-container matColumnDef="rating">
+      <th mat-header-cell *matHeaderCellDef> #1 </th>
+
+      <td mat-cell *matCellDef="let element"><button class="btn btn-primary" (click)="open(content, element.id)">Đánh giá và phản hồi</button></td>
+
+    
+<!--      <td mat-cell *matCellDef="let element"><button class="btn btn-primary" (click)="rating(element.id)">Đánh giá và phản hồi</button></td>-->
+    </ng-container>
+
+
+    <tr mat-header-row *matHeaderRowDef="displayOrderLabel"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayOrderLabel;"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                 showFirstLastButtons
+                 aria-label="Select page of periodic elements">
+  </mat-paginator>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Đánh giá & Phản hồi</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="card">
+      <div class="row">
+<!--        <div class="col-2"> <img src="https://i.imgur.com/xELPaag.jpg" width="70" class="rounded-circle mt-2" alt=""> </div>-->
+        <div class="col-10">
+          <div class="comment-box ml-2">
+            <h4 class="text-xl-start text-primary">Đánh giá</h4>
+            <div class="rating" >
+              <input type="radio" name="rating" value="5" (change)="getRating($event)" id="5"><label for="5">☆</label>
+              <input type="radio" name="rating" value="4" (change)="getRating($event)" id="4"><label for="4">☆</label>
+              <input type="radio" name="rating" value="3" (change)="getRating($event)" id="3"><label for="3">☆</label>
+              <input type="radio" name="rating" value="2" (change)="getRating($event)" id="2"><label for="2">☆</label>
+              <input type="radio" name="rating" value="1" (change)="getRating($event)" id="1"><label for="1">☆</label>
+            </div>
+
+            <div class="comment-area">
+              <textarea class="form-control"
+                        placeholder="what is your view?"
+                        rows="4" (change)="getComment($event)"></textarea>
+            </div>
+            <div class="comment-btns mt-2">
+              <div class="row">
+                <div class="col-6">
+<!--                  <div class="pull-left"> <button class="btn btn-success btn-sm" (click)="modal.dismiss('Cross click')">Hủy</button> </div>-->
+                </div>
+                <div class="col-6">
+                  <div class="pull-right"> <button class="btn btn-success send btn-sm" (click)="onSubmit()">Gửi đánh giá <i class="fa fa-long-arrow-right ml-1"></i></button> </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+<!--  <div class="modal-footer">-->
+<!--    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>-->
+<!--  </div>-->
+</ng-template>
